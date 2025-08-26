@@ -34,18 +34,35 @@ Referensi:
 
 ## Data Understanding  
 
-Dataset: **Household Monthly Electricity Bill** (`household_monthly_electricity_bill.csv`)  
-Sumber: [UCI Machine Learning Repository](https://archive.ics.uci.edu/)  
+# 📊 Data Understanding
 
-### Variabel-variabel dalam dataset:  
-- `num_people` → jumlah penghuni rumah  
-- `house_size` → ukuran rumah (m²)  
-- `monthly_usage_kWh` → total konsumsi energi bulanan (kWh)  
-- `peak_usage_ratio` → rasio pemakaian listrik pada jam sibuk (peak hours)  
-- `amount_paid` → **target** (total tagihan listrik dalam Rupiah)  
+**Dataset**: [Household Monthly Electricity Bill](https://www.kaggle.com/datasets/gireeshs/household-monthly-electricity-bill?resource=download)
+
+## Fitur-fitur dalam dataset
+
+- `num_rooms` → Jumlah ruangan dalam rumah  
+- `num_people` → Jumlah penghuni rumah  
+- `housearea` → Luas rumah (m²)  
+- `is_ac` → Kepemilikan AC (`1 = ya`, `0 = tidak`)  
+- `is_tv` → Kepemilikan TV (`1 = ya`, `0 = tidak`)  
+- `is_flat` → Jenis hunian (`1 = apartemen/flat`, `0 = rumah biasa`)  
+- `ave_monthly_income` → Rata-rata pendapatan bulanan keluarga  
+- `num_children` → Jumlah anak dalam keluarga  
+- `is_urban` → Lokasi hunian (`1 = urban`, `0 = rural`)  
+- `amount_paid` → Tagihan listrik bulanan (target/label)  
+
+## Tujuan
+
+Memprediksi **`amount_paid`** (tagihan listrik bulanan) berdasarkan karakteristik rumah tangga seperti:  
+- jumlah penghuni,  
+- kondisi rumah,  
+- kepemilikan barang elektronik,  
+- serta pendapatan keluarga.
+
 
 ### EDA (Exploratory Data Analysis)  
 - Pengecekan missing values dengan `.isnull().sum()`.  
+- Informasi dataset dengan `.info()`.  
 - Statistik deskriptif dengan `.describe()`.  
 - Visualisasi *pairplot* untuk melihat hubungan antar variabel.  
 
@@ -53,7 +70,7 @@ Sumber: [UCI Machine Learning Repository](https://archive.ics.uci.edu/)
 
 ## Data Preparation  
 Langkah persiapan data:  
-1. **Handling Missing Values** → imputasi/drop jika ada nilai kosong.  
+1. **Handling Missing Values** → imputasi/drop jika ada nilai kosong (berhubung tidak ada missing values jadi pada case code saya tidak digunakan).  
 2. **Train-Test Split** → data dibagi menjadi 80% train dan 20% test.  
 3. **Feature Selection** → menggunakan semua variabel kecuali target `amount_paid`.  
 
