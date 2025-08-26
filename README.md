@@ -36,20 +36,36 @@ Referensi:
 
 # 📊 Data Understanding
 
+## 📂 Struktur Dataset
+- Jumlah **baris (rows):** 1.000  
+- Jumlah **kolom (columns):** 10  
+
+---
+
+## 🔎 Kondisi Data
+1. **Missing Values**  
+   - Tidak terdapat missing values pada seluruh fitur (`0` null values). ✅  
+
+---
+
+## 📌 Pengantar
+Dataset ini berisi informasi rumah tangga dan tagihan listrik bulanan di India. Tujuan analisis adalah untuk memahami faktor-faktor yang memengaruhi **biaya listrik** serta membangun model prediksi **`amount_paid`**.  
+
 **Dataset**: [Household Monthly Electricity Bill](https://www.kaggle.com/datasets/gireeshs/household-monthly-electricity-bill?resource=download)
 
-## Fitur-fitur dalam dataset
+---
 
-- `num_rooms` → Jumlah ruangan dalam rumah  
-- `num_people` → Jumlah penghuni rumah  
-- `housearea` → Luas rumah (m²)  
-- `is_ac` → Kepemilikan AC (`1 = ya`, `0 = tidak`)  
-- `is_tv` → Kepemilikan TV (`1 = ya`, `0 = tidak`)  
-- `is_flat` → Jenis hunian (`1 = apartemen/flat`, `0 = rumah biasa`)  
-- `ave_monthly_income` → Rata-rata pendapatan bulanan keluarga  
-- `num_children` → Jumlah anak dalam keluarga  
-- `is_urban` → Lokasi hunian (`1 = urban`, `0 = rural`)  
-- `amount_paid` → Tagihan listrik bulanan (target/label)  
+## 📝 Uraian Fitur
+- `num_rooms` → Jumlah ruangan dalam rumah *(int64)*  
+- `num_people` → Jumlah penghuni rumah *(int64)*  
+- `housearea` → Luas rumah (m²) *(float64)*  
+- `is_ac` → Kepemilikan AC (`1 = ya`, `0 = tidak`) *(int64)*  
+- `is_tv` → Kepemilikan TV (`1 = ya`, `0 = tidak`) *(int64)*  
+- `is_flat` → Jenis hunian (`1 = apartemen/flat`, `0 = rumah biasa`) *(int64)*  
+- `ave_monthly_income` → Rata-rata pendapatan bulanan keluarga *(float64)*  
+- `num_children` → Jumlah anak dalam keluarga *(int64)*  
+- `is_urban` → Lokasi hunian (`1 = urban`, `0 = rural`) *(int64)*  
+- `amount_paid` → Tagihan listrik bulanan (target/label) *(float64)*  
 
 ## Tujuan
 
@@ -70,25 +86,50 @@ Memprediksi **`amount_paid`** (tagihan listrik bulanan) berdasarkan karakteristi
 
 ## Data Preparation  
 Langkah persiapan data:  
-1. **Handling Missing Values** → imputasi/drop jika ada nilai kosong (berhubung tidak ada missing values jadi pada case code saya tidak digunakan).  
+1. **Feature Selection** → menggunakan semua variabel kecuali target `amount_paid`.  
 2. **Train-Test Split** → data dibagi menjadi 80% train dan 20% test.  
-3. **Feature Selection** → menggunakan semua variabel kecuali target `amount_paid`.  
 
 Alasan: Tahapan ini penting agar model tidak bias, mampu generalisasi, dan hanya belajar dari data yang relevan.  
 
 ---
 
-## Modeling  
+## 🧠 Modeling  
 
-### Model yang digunakan:  
-1. **Linear Regression**  
-   - Sederhana, cepat dilatih.  
-   - Mudah diinterpretasi (koefisien fitur).  
+### Model 1: Linear Regression  
+**Cara Kerja:**  
+Linear Regression memodelkan hubungan antara variabel input (fitur) dengan target menggunakan persamaan linear. Model ini mencari garis terbaik (*best fit line*) untuk meminimalkan error antara nilai aktual dengan prediksi.  
 
-2. **Random Forest Regressor**  
-   - Ensemble model dengan *bagging*.  
-   - Cocok untuk data non-linear.  
-   - Parameter utama: `n_estimators=100`.  
+**Parameter:**  
+- Menggunakan default parameter dari `LinearRegression()`.  
+- Secara default, model otomatis menambahkan intercept (`fit_intercept=True`) dan tidak ada parameter khusus lain yang diubah.  
+
+**Kelebihan:**  
+- Cepat dan sederhana untuk dilatih.  
+- Mudah diinterpretasi karena setiap fitur punya koefisien yang jelas.  
+
+**Kekurangan:**  
+- Tidak fleksibel terhadap hubungan non-linear.  
+- Sensitif terhadap multikolinearitas dan outlier.  
+
+---
+
+### Model 2: Random Forest Regressor  
+**Cara Kerja:**  
+Random Forest adalah ensemble model berbasis *bagging* yang membangun banyak decision tree. Hasil prediksi adalah rata-rata dari seluruh pohon, sehingga lebih stabil dan akurat pada data non-linear.  
+
+**Parameter yang digunakan:**  
+- `n_estimators=100` → jumlah pohon yang digunakan dalam forest.  
+- `random_state=42` → kontrol randomisasi agar hasil konsisten dan dapat direproduksi.  
+
+**Kelebihan:**  
+- Menangani data non-linear dengan baik.  
+- Tidak mudah overfitting dibanding decision tree tunggal.  
+- Bisa menghitung *feature importance*.  
+
+**Kekurangan:**  
+- Lebih lambat dibanding Linear Regression, terutama untuk dataset besar.  
+- Model sulit diinterpretasikan (black-box).  
+
 
 ### Proses Training:  
 - Model dilatih dengan data training (80%).  
@@ -97,9 +138,9 @@ Alasan: Tahapan ini penting agar model tidak bias, mampu generalisasi, dan hanya
 
 ---
 
-## Evaluation  
+# Evaluation
 
-### Metrik Evaluasi  
+## Metrik Evaluasi
 - **MAE (Mean Absolute Error)**  
   \[
   MAE = \frac{1}{n} \sum |y_i - \hat{y}_i|
@@ -115,29 +156,38 @@ Alasan: Tahapan ini penting agar model tidak bias, mampu generalisasi, dan hanya
   R^2 = 1 - \frac{\sum (y_i - \hat{y}_i)^2}{\sum (y_i - \bar{y})^2}
   \]  
 
-### Hasil Evaluasi  
+## Hasil Evaluasi
 - **Linear Regression**  
-  - MAE: **54.04**  
+  - MAE: **54.04** → rata-rata prediksi meleset sekitar 54 ribu rupiah  
   - RMSE: **62.91**  
-  - R²: **0.8848**  
+  - R²: **0.8848** → model menjelaskan 88% variasi tagihan listrik  
 
 - **Random Forest Regressor**  
   - MAE: **60.06**  
   - RMSE: **72.12**  
-  - R²: **0.8486**  
+  - R²: **0.8486** → model menjelaskan 84.8% variasi tagihan listrik  
 
-📌 **Kesimpulan**: Linear Regression menghasilkan performa lebih baik dibanding Random Forest pada dataset ini, dengan R² sebesar **0.88** (menjelaskan 88% variasi tagihan listrik).  
+📌 **Kesimpulan Percobaan Modelling**: Linear Regression memberikan performa lebih baik dibanding Random Forest untuk dataset ini.
 
 ---
 
-## Kesimpulan  
-- Proyek berhasil membangun model regresi untuk prediksi tagihan listrik.  
-- **Linear Regression** terbukti sebagai model terbaik untuk dataset ini.  
-- Faktor utama penentu tagihan listrik: `monthly_usage_kWh`, `peak_usage_ratio`, dan `num_people`.  
+## Hasil Percobaan
+1. **Menjawab Problem Statements**  
+   - **Problem 1**: Model Linear Regression mampu memprediksi tagihan listrik bulan berikutnya dengan akurasi tinggi.  
+   - **Problem 2**: Analisis fitur menunjukkan faktor utama yang memengaruhi tagihan listrik adalah `monthly_usage_kWh`, `peak_usage_ratio`, dan `num_people`.  
 
-### Pengembangan ke Depan  
+2. **Mencapai Goals yang Diharapkan**  
+   - **Goal 1**: Model prediksi dengan R² 0.88 berhasil dicapai, sehingga dapat diandalkan untuk estimasi tagihan listrik.  
+   - **Goal 2**: Identifikasi fitur penting berhasil, memberikan insight untuk efisiensi energi rumah tangga.  
+
+3. **Dampak Solusi Statement**  
+   - Linear Regression sebagai baseline sederhana terbukti efektif dan interpretable.  
+   - Random Forest digunakan untuk menangkap hubungan non-linear, meskipun performanya sedikit lebih rendah, tetap memberikan insight tambahan.  
+   - Evaluasi dengan MAE, RMSE, dan R² membantu memilih model terbaik dan memberikan dasar keputusan bisnis.
+
+---
+
+## Pengembangan ke Depan
 - Mencoba algoritma lain: **XGBoost, Gradient Boosting**.  
-- Menambahkan variabel eksternal (tarif PLN, data cuaca).  
-- Integrasi ke **simulasi PLN Mobile** agar pelanggan dapat memperkirakan tagihan listrik mandiri.  
-
----
+- Menggunakan dataset real Indonesia (tarif PLN, data cuaca).  
+- Integrasi ke **simulasi PLN Mobile** agar pelanggan dapat memperkirakan tagihan listrik secara mandiri.
